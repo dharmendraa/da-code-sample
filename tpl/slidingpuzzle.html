@@ -1,0 +1,143 @@
+<style>
+.SlidingPuzzleFigure { 
+	display: block;
+	margin: 20px;
+	font-family: Helvetica;
+}
+figcaption {
+	display: block;
+	font-family: Helvetica;
+	font-size: 18px;
+	font-style: italic;
+	font-weight: 600;
+	padding: 10px 0 0 30px;
+}
+
+.SlidingPuzzleFigure ul.SlidingPuzzle{
+	border: 10px solid #000;
+	border-radius: 5px;
+	background: #000;
+	margin: 0;
+	padding: 0;
+}
+
+.SlidingPuzzleFigure ul.SlidingPuzzle li.Tile{
+	background: #fff;
+	display: inline-block;
+	text-align: center;
+	font-weight: bold;
+	font-size: 20px;
+	line-height: 20px;
+}
+
+.SlidingPuzzleFigure ul.SlidingPuzzle li.blankTile{
+	background: #000;
+	display: inline-block;
+	text-align: center;
+	font-weight: bold;
+	font-size: 24px;
+	line-height: 20px;
+}
+
+.SlidingPuzzleFigure ul.SlidingPuzzle li.blankTile span{
+	background: #000 !important;
+	border: 10px outset transparent !important;
+}
+
+ .SlidingPuzzleFigure ul.SlidingPuzzle li span{
+	background: #fff;
+	display: inline-block;
+	padding: 20px 25px;
+	line-height: 20px;
+}
+</style>
+
+
+<script>
+angular.element(document).ready(function(){
+	
+	var zindex = 1; 
+	var EmptySquare = 9;
+	
+	$.fn.extend({ slidingPuzzle:
+		
+		function(square_size)
+		{
+			var targetElement = "." + $(this).attr("class");
+			var sqSize = square_size + 'px';
+			var boardSize = (square_size * 3) + 'px';
+			$(".SlidingPuzzle").css({ position:'relative', width: boardSize, height: boardSize });
+			
+			$(".SlidingPuzzle").append("<li class='blankTile Tile9'>&nbsp;</li>");
+			
+			for (var i = 0; i < 9; i++)
+			{
+				$(".SlidingPuzzle li.Tile"+(i+1)).html("<span>"+(i+1)+"</span>");
+				
+				$(".SlidingPuzzle li.Tile"+(i+1)).css(
+				{position: "absolute", left: ((i % 3) * square_size) + "px",top: Math.floor(i / 3) * square_size + "px", width: square_size + "px", height: square_size + "px",background: "#FFF" + (-(i % 3) * square_size) + "px " + -Math.floor(i / 3) * square_size + "px no-repeat !important"});
+				
+				$(".SlidingPuzzle li.Tile"+(i+1)+" span").css({background: "#FFF", border: "10px outset #e1e1e1"});
+			}
+			
+			$(".SlidingPuzzle").children("li:nth-child(" + EmptySquare + ") span").css({background: "#000"});
+			
+			// click event for each square
+			$(".SlidingPuzzle").children("li").click(function(){
+				Move(this, square_size);
+			});
+		}
+    });
+	
+    function Move(clicked_square, square_size)
+    {
+		var movable = false;
+		var oldxpos = $(".SlidingPuzzle").children("li:nth-child(" + EmptySquare + ")").css("left");
+		var oldypos = $(".SlidingPuzzle").children("li:nth-child(" + EmptySquare + ")").css("top");
+		var newxpos = $(clicked_square).css("left");
+		var newypos = $(clicked_square).css("top");
+		
+		if (oldxpos == newxpos && newypos == (parseInt(oldypos) - square_size) + 'px')
+		movable = true;
+
+		if (oldxpos == newxpos && newypos == (parseInt(oldypos) + square_size) + 'px')
+		movable = true;
+
+		if ((parseInt(oldxpos) - square_size) + 'px' == newxpos && newypos == oldypos)
+		movable = true;
+
+		if ((parseInt(oldxpos) + square_size) + 'px' == newxpos && newypos == oldypos)
+		movable = true;
+		
+		if (movable){
+			$(clicked_square).css("z-index", zindex++);
+			
+			$(clicked_square).animate({ left: oldxpos, top: oldypos }, 200, function(){
+				$(".SlidingPuzzle").children("li:nth-child(" + EmptySquare + ")").css("left", newxpos);
+				$(".SlidingPuzzle").children("li:nth-child(" + EmptySquare + ")").css("top", newypos);
+			});
+		}
+    }
+	
+	$(".SlidingPuzzle").slidingPuzzle(80);
+});
+</script>
+
+<!-- Do not edit any html in the body tag -->
+<figure class="SlidingPuzzleFigure">
+
+	<ul class="SlidingPuzzle">
+		<li class="Tile Tile1">1</li>
+		<li class="Tile Tile2">2</li>
+		<li class="Tile Tile3">3</li>
+		<li class="Tile Tile4">4</li>
+		<li class="Tile Tile5">5</li>
+		<li class="Tile Tile6">6</li>
+		<li class="Tile Tile7">7</li>
+		<li class="Tile Tile8">8</li>
+	</ul>
+
+	<figcaption>A Sliding Puzzle</figcaption>
+</figure>
+
+<p><a href="http://jsfiddle.net/ahirwar1980/22eaehth" target="_blank">View Source</a></p>
