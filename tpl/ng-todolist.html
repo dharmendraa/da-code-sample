@@ -1,0 +1,50 @@
+<style>
+#todoContainer {color: #333;}
+#todoContainer .innerBlock{ padding: 10px; margin: 5px; border: 1px solid #ddd; border-radius: 5px;}
+#todoContainer .todolistform{background: #cccccc;}
+#todoContainer .todolistform input{padding: 5px;}
+#todoContainer .todolistform input[type="text"]{width: 50%; padding: 5px;}
+#todoContainer input[type="button"]{
+	width: 80px; 
+	padding: 5px;
+	border: 1px solid #bfbfbf;
+	border-radius: 5px;
+	background: -moz-linear-gradient(top, #f2f2f2, #d9d9d9);
+	background: -webkit-linear-gradient(top, #f2f2f2, #d9d9d9);
+	background: -ms-linear-gradient(top, #f2f2f2, #d9d9d9);
+	background: -o-linear-gradient(top, #f2f2f2, #d9d9d9);
+	background: linear-gradient(top, #f2f2f2, #d9d9d9);
+}
+#todoContainer .todolistfilter{background: #cccccc;}
+#todoContainer .todolistTable{width: 100%;}
+#todoContainer .todolistTable td{margin-bottom: 5px; padding-bottom: 5px;}
+#todoContainer .todolistTable td:nth-child(2){width: 80%;}
+#todoContainer .completed{color: #808080; text-decoration: line-through;}
+@media screen and (max-width: 768px) {
+	#todoContainer .todolistTable d:nth-child(2){width: auto;}
+}
+</style>
+
+<div ng-controller="toDoListCtrl" id="todoContainer">
+	<h3>{{title}}</h3>
+	<div class="innerBlock todolistform">
+		<input type="text" ng-model="inpList" placeholder="Please add to you To Do List" />
+		<input type="button" name="btn" value="Add" ng-click="addToList()" />
+	</div>
+
+	<table class="todolistTable">
+		<tr id="{{item.id}}" ng-repeat="item in listArray track by item.id" ng-show="(filter=='all') || (filter=='completed' && item.completed) || (filter=='incompleted' && !item.completed)">
+			<td><input type="checkbox" ng-model="item.completed" /></td>
+			<td><span ng-bind="item.name" ng-class="(item.completed)?'completed':'incompleted'"></span></td>
+			<td><input type="button" value="Remove" ng-click="removeItem($index)" /></td>
+		</tr>
+	</table>
+
+	<div class="innerBlock todolistfilter" ng-show="listArray.length > 0">
+		<span><span ng-mode="allCompleted">{{chkAllCompleted()}}</span> Completed | </span>
+		<span><input type="radio" name="filterInput" ng-model="filter" value="all" />All</span>
+		<span><input type="radio" name="filterInput" ng-model="filter"  value="completed"  />Completed</span>
+		<span><input type="radio" name="filterInput" ng-model="filter"  value="incompleted"  />Incompleted</span>
+	</div>
+	<p><a href="http://jsfiddle.net/ahirwar1980/ekqfgv0d/" target="_blank">View Source</a></p>
+</div>
